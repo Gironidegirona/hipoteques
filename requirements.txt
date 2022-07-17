@@ -1,5 +1,4 @@
 streamlit
 numpy
 plotly
-matplotlib==3.2.2
 numpy-financial==1.0.0
