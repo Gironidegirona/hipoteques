@@ -1,0 +1,8 @@
+plotly
+altair
+pandas
+streamlit
+numpy
+numpy-financial
+random
+math
