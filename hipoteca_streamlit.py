@@ -321,6 +321,7 @@ with tab3:
         souMensual = (souMensual_1 + souMensual_2)
 
         if  (1):
+	    ii = 0
             while abs(stress_-stressTarget)>1:
                 vivenda_ = 0.5*(vivendamin+vivendamax)
                 entrada_, impostos_, notaris_ = despeses(vivenda_, pcentrada = pcentrada/100.) 
@@ -338,6 +339,9 @@ with tab3:
                 
                 if stress_ < stressTarget:
                     vivendamin = vivenda_
+		ii+=1
+		if ii>10:
+                    break
 
             
             st.markdown("Preu màxim assequible [k€]: ")
