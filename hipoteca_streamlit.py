@@ -136,7 +136,7 @@ st.title("Calculador Hipoteques")
 
 # In the second tab, put the content for "Banc"
 
-tab1, tab2, tab3 = st.tabs(["Hipoteca", "Stress", "Capacitat"])
+tab1, tab2, tab3, tab4 = st.tabs(["Hipoteca", "Stress", "Capacitat", "Amortització"])
 
 with tab1:
     # In the first tab, use two columns
@@ -159,7 +159,7 @@ with tab1:
         st.header("Banc")
         pcentrada = float(st.text_input("Entrada [%]", value="20"))
         anys = float(st.text_input("Anys hipoteca", value="30"))
-        rate = float(st.text_input("Interes [%]", value="2.51"))
+        rate = float(st.text_input("Interes [%]", value="2.81"))
 
     with col3:
 
@@ -279,10 +279,8 @@ with tab2:
 
         st.header("Result")
         st.markdown("Stress [%]: ")
-
-        if stress > 0 and stress < 100:
-            st.warning(f"{stress}")
-
+        
+        st.warning(f"{stress}")
 
 
         st.markdown("Cuota mensual [€]: ")
@@ -295,17 +293,14 @@ with tab2:
 
             st.markdown("Sou net 12 pagues[€]: ")
             st.success(f"{souMensual_2}")
-
-
 with tab3:
 
     col1, col2= st.columns(2)
     with col1:
         st.header("Casa")
         estalvis = float(st.text_input("Estalvis que aportarem (valor o sino el min) [k€]", value="0"))
-        interesrate = float(st.text_input("interes calcular [%]", value="2.71"))
+        interesrate = float(st.text_input("interes calcular [%]", value="2.81"))
         stressTarget = float(st.text_input("Màxim stress permet [%]", value="35"))
-
 
     with col2:
 
@@ -350,3 +345,47 @@ with tab3:
 
         st.markdown("Cuota mensual [€]: ")
         st.warning(f"{cuotamensual_}")
+with tab4:
+
+    col1, col2= st.columns(2)
+    with col1:
+
+        st.header("Casa")
+        hipoteca0 = float(st.text_input("Remanent a pagar [k€]", value="140"))
+        interesactual = int(eval(st.text_input("Interes actual [%]", value="3.3"))*12)/12
+        anyspagar = int(eval(st.text_input("Anys a pagar (pot ser 22.5) [anys]", value="22.7"))*12)/12
+        valoramortitzat = int(eval(st.text_input("Valor a amortitzar [k€]", value="0")))
+
+        ncuotamensual = round(calculateCuota(hipoteca0-valoramortitzat, interesactual, anys = anyspagar),1)
+
+
+        cuota0 = round(calculateCuota(hipoteca0, interesactual, anys = anyspagar),1)
+        ncuota = 10
+        anysmax = anyspagar
+        anysmin = 0
+
+        jj = 0
+        while abs(cuota0-ncuota)>5:
+            nanyspagar = int(0.5*(anysmax+anysmin)*12+1)/12
+            ncuota = round(calculateCuota(hipoteca0-valoramortitzat, interesactual, anys = nanyspagar),1)
+
+            if cuota0 > ncuota:
+                anysmax = nanyspagar
+                
+            if cuota0 < ncuota:
+                anysmin = nanyspagar
+            jj+=1
+            if jj>10:
+                break
+
+    with col2:
+        
+        st.header("Resultat")
+        st.markdown("Cuota actual [€]: ")
+        st.warning(f"{round(cuota0,2)}")
+
+        st.markdown("Nova cuota (reduïnt capital) [€]: ")
+        st.warning(f"{round(ncuotamensual,2)}")
+
+        st.markdown("Nou periode (reduïnt anys) [anys]: ")
+        st.warning(f"{round(nanyspagar,2)}")
