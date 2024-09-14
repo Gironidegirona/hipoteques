@@ -2,3 +2,5 @@ streamlit
 numpy
 plotly
 numpy-financial==1.0.0
+seaborn
+pandas
