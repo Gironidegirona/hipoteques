@@ -1,3 +1,4 @@
+
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -319,29 +320,28 @@ with tab3:
 
 
         souMensual = (souMensual_1 + souMensual_2)
+        
+        ii = 0
+        while abs(stress_-stressTarget)>1:
+            vivenda_ = 0.5*(vivendamin+vivendamax)
+            entrada_, impostos_, notaris_ = despeses(vivenda_, pcentrada = pcentrada/100.) 
 
-        if  (1):
-	    ii = 0
-            while abs(stress_-stressTarget)>1:
-                vivenda_ = 0.5*(vivendamin+vivendamax)
-                entrada_, impostos_, notaris_ = despeses(vivenda_, pcentrada = pcentrada/100.) 
+            if estalvis > (entrada_+impostos_+notaris_):
+                entrada_ = estalvis - impostos_-notaris_
 
-                if estalvis > (entrada_+impostos_+notaris_):
-                    entrada_ = estalvis - impostos_-notaris_
+            cuotamensual_ = round(calculateCuota(vivenda_+reforma-entrada_, interesrate, anys = anys),1)
+            estalvisnecessaris_ = round(entrada_+impostos_+notaris_,1)
 
-                cuotamensual_ = round(calculateCuota(vivenda_+reforma-entrada_, interesrate, anys = anys),1)
-                estalvisnecessaris_ = round(entrada_+impostos_+notaris_,1)
+            stress_ = round((altresCredits+cuotamensual_)*100/(souMensual+altresIngressos),1)
 
-                stress_ = round((altresCredits+cuotamensual_)*100/(souMensual+altresIngressos),1)
-
-                if stress_ > stressTarget:
-                    vivendamax = vivenda_
+            if stress_ > stressTarget:
+                vivendamax = vivenda_
                 
-                if stress_ < stressTarget:
-                    vivendamin = vivenda_
-		ii+=1
-		if ii>10:
-                    break
+            if stress_ < stressTarget:
+                vivendamin = vivenda_
+            ii+=1
+            if ii>10:
+                break
 
             
             st.markdown("Preu màxim assequible [k€]: ")
@@ -352,5 +352,3 @@ with tab3:
 
             st.markdown("Cuota mensual [€]: ")
             st.warning(f"{cuotamensual}")
-
-
