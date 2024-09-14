@@ -344,11 +344,11 @@ with tab3:
                 break
 
             
-            st.markdown("Preu màxim assequible [k€]: ")
-            st.success(f"{round(vivenda_,1)}")
+        st.markdown("Preu màxim assequible [k€]: ")
+        st.success(f"{round(vivenda_,1)}")
 
-            st.markdown("Entrada real [%]: ")
-            st.warning(f"{round(entrada_/vivenda_*100,2)}")
+        st.markdown("Entrada real [%]: ")
+        st.warning(f"{round(entrada_/vivenda_*100,2)}")
 
-            st.markdown("Cuota mensual [€]: ")
-            st.warning(f"{cuotamensual}")
+        st.markdown("Cuota mensual [€]: ")
+        st.warning(f"{cuotamensual}")
