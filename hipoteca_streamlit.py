@@ -279,12 +279,10 @@ with tab2:
 
         st.header("Result")
         st.markdown("Stress [%]: ")
-        if stress < 35:
-            st.success(f"{stress}")
-        if stress > 35 and stress < 40:
+
+        if stress > 0 and stress < 100:
             st.warning(f"{stress}")
-        if stress > 40:
-            st.error(f"{stress}")
+
 
 
         st.markdown("Cuota mensual [€]: ")
