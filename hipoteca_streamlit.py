@@ -261,7 +261,7 @@ with tab2:
     with col1:
         st.header("Casa")
         sou_1 = float(st.text_input("Sou 1 [k€]", value="40"))
-        sou_2 = float(st.text_input("Sou 1 [k€]", value="40"))
+        sou_2 = float(st.text_input("Sou 2 [k€]", value="40"))
 
         st.markdown("""---""")
         altresCredits = float(st.text_input("Altres Credits [€/mes]", value="0"))
