@@ -286,7 +286,7 @@ with tab2:
         st.markdown("Cuota mensual [€]: ")
         st.warning(f"{cuotamensual}")
 
-        if(0):
+        if(1):
             st.markdown("""---""")
             st.markdown("Sou net 12 pagues[€]: ")
             st.success(f"{souMensual_1}")
@@ -342,6 +342,10 @@ with tab3:
 
         st.markdown("Entrada real [%]: ")
         st.warning(f"{round(entrada_/vivenda_*100,2)}")
+
+        st.markdown("Entrada necessaria [k€]: ")
+        st.warning(f"{round(entrada_,2)}")
+
 
         st.markdown("Cuota mensual [€]: ")
         st.warning(f"{cuotamensual_}")
