@@ -344,7 +344,7 @@ with tab3:
         st.warning(f"{round(entrada_/vivenda_*100,2)}")
 
         st.markdown("Entrada necessaria [k€]: ")
-        st.warning(f"{round(entrada_+impostos_+notaris_,2)}")
+        st.warning(f"{round(estalvisnecessaris_,2)}")
 
 
         st.markdown("Cuota mensual [€]: ")
