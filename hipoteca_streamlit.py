@@ -306,7 +306,7 @@ with tab3:
 
         st.header("Result")
 
-        vivendamin, vivendamax = 0, 600
+        vivendamin, vivendamax = 0, 6000
         stress_ = 100
         vivenda_ = 0
         cuotamensual_ = 0
@@ -333,7 +333,7 @@ with tab3:
             if stress_ < stressTarget:
                 vivendamin = vivenda_
             ii+=1
-            if ii>10:
+            if ii>15:
                 break
 
             
