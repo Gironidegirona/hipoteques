@@ -333,7 +333,10 @@ with tab3:
             if stress_ < stressTarget:
                 vivendamin = vivenda_
             ii+=1
-            if ii>15:
+            if ii>50:
+                break
+                
+            if abs(vivendamax-vivendamin)<0.5:
                 break
 
             
