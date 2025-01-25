@@ -320,7 +320,8 @@ with tab3:
             
             vivenda_ = 0.5*(vivendamin+vivendamax)
             entrada_, impostos_, notaris_ = despeses(vivenda_, pcentrada = pcentrada/100.) 
-
+            
+            ok = 0
             if estalvis0 > 0:
                 if estalvis0 > (entrada_+impostos_+notaris_):
                     #entrada_ = estalvis - impostos_-notaris_
