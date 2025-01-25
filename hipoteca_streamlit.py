@@ -312,10 +312,12 @@ with tab3:
         cuotamensual_ = 0
 
 
-        souMensual = (souMensual_1 + souMensual_2)
+        
         
         ii = 0
-        while abs(stress_-stressTarget)>1:
+        while abs(stress_-stressTarget)>0.1:
+            souMensual = (souMensual_1 + souMensual_2)
+            
             vivenda_ = 0.5*(vivendamin+vivendamax)
             entrada_, impostos_, notaris_ = despeses(vivenda_, pcentrada = pcentrada/100.) 
 
@@ -365,7 +367,7 @@ with tab4:
     with col1:
 
         st.header("Casa")
-        hipoteca0 = float(st.text_input("Remanent a pagar [k€]", value="140"))
+        hipoteca0 = float(st.text_input("Remanent a pagar [k€] 00", value="140"))
         interesactual = int(eval(st.text_input("Interes actual [%]", value="3.3"))*12)/12
         anyspagar = int(eval(st.text_input("Anys a pagar (pot ser 22.5) [anys]", value="22.7"))*12)/12
         valoramortitzat = int(eval(st.text_input("Valor a amortitzar [k€]", value="0")))
