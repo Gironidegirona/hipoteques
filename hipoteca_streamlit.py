@@ -11,6 +11,50 @@ sns.set_theme()
 # Mobile-friendly settings
 st.set_page_config(layout="centered")
 
+def calculateAtMaxStress(souMensual_1, souMensual_2, estalvis0, interesrate, anys, altresIngressos=0, altresCredits=0,pcentrada=20, stressTarget=35):
+    vivendamin, vivendamax = 0, 6000
+    stress_ = 100
+    vivenda_ = 0
+    cuotamensual_ = 0
+
+    ii = 0
+    while abs(stress_-stressTarget)>0.01:
+        souMensual = (souMensual_1 + souMensual_2)
+            
+        vivenda_ = 0.5*(vivendamin+vivendamax)
+        entrada_, impostos_, notaris_ = despeses(vivenda_, pcentrada = pcentrada/100.) 
+        
+        ok = 0
+        if estalvis0 > 0:
+            if estalvis0 > (entrada_+impostos_+notaris_):
+                #entrada_ = estalvis - impostos_-notaris_
+                ok=1
+        else:
+            ok=1
+            
+        if ok==1:
+            cuotamensual_ = round(calculateCuota(vivenda_-entrada_, interesrate, anys = anys),1)
+            estalvisnecessaris_ = round(entrada_+impostos_+notaris_,1)
+
+            stress_ = round((altresCredits+cuotamensual_)*100/(souMensual+altresIngressos),1)
+    
+            if stress_ > stressTarget:
+                vivendamax = vivenda_
+                    
+            if stress_ < stressTarget:
+                vivendamin = vivenda_
+            ii+=1
+            if ii>50:
+                break
+                    
+            if abs(vivendamax-vivendamin)<0.5:
+                break
+            else:
+                vivendamax = vivenda_
+
+    return vivenda_, entrada_, estalvisnecessaris_, cuotamensual_
+    
+
 def calculateCuota(c0, rate, anys = 30):
     ratem = rate/1200
     cuota = round((c0*(ratem*(1+ratem)**(anys*12))/((1+ratem)**(12*anys)-1))*1000,1)
@@ -305,49 +349,24 @@ with tab3:
 
         st.header("Result")
 
-        vivendamin, vivendamax = 0, 6000
-        stress_ = 100
-        vivenda_ = 0
-        cuotamensual_ = 0
-
-
-        
+        error = 100
+        pcentradamax = 100
+        pcentradamin = 0
         
         ii = 0
-        while abs(stress_-stressTarget)>0.01:
-            souMensual = (souMensual_1 + souMensual_2)
+        while error > 0.1:
+            pcentrada = 0.5*(pcentradamax + pcentradamin)
+            vivenda_, entrada_, estalvisnecessaris_, cuotamensual_ = calculateAtMaxStress(souMensual_1, souMensual_2, estalvis0, interesrate, anys, altresIngressos=altresIngressos,altresCredits=altresCredits,pcentrada=pcentrada, stressTarget=stressTarget)
             
-            vivenda_ = 0.5*(vivendamin+vivendamax)
-            entrada_, impostos_, notaris_ = despeses(vivenda_, pcentrada = pcentrada/100.) 
-            
-            ok = 0
-            if estalvis0 > 0:
-                if estalvis0 > (entrada_+impostos_+notaris_):
-                    #entrada_ = estalvis - impostos_-notaris_
-                    ok=1
+            if estalvisnecessaris_<estalvis0:
+                pcentradamin=pcentrada
             else:
-                ok=1
+                pcentradamax=pcentrada
+                
+            if ii >50:
+                break
             
-            if ok==1:
-                cuotamensual_ = round(calculateCuota(vivenda_+reforma-entrada_, interesrate, anys = anys),1)
-                estalvisnecessaris_ = round(entrada_+impostos_+notaris_,1)
-    
-                stress_ = round((altresCredits+cuotamensual_)*100/(souMensual+altresIngressos),1)
-    
-                if stress_ > stressTarget:
-                    vivendamax = vivenda_
-                    
-                if stress_ < stressTarget:
-                    vivendamin = vivenda_
-                ii+=1
-                if ii>50:
-                    break
-                    
-                if abs(vivendamax-vivendamin)<0.5:
-                    break
-            else:
-                vivendamax = vivenda_
-
+            ii+=1
             
         st.markdown("Preu màxim assequible [k€]: ")
         st.success(f"{round(vivenda_,1)}")
