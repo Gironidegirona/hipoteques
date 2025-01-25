@@ -365,7 +365,7 @@ with tab3:
             
             error = abs(pcentradamax-pcentradamin)
             
-            if ii > 50:
+            if ii > 5:
                 break
             
             ii+=1
