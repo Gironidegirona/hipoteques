@@ -362,8 +362,10 @@ with tab3:
                 pcentradamin=pcentrada
             else:
                 pcentradamax=pcentrada
-                
-            if ii >50:
+            
+            error = abs(pcentradamax-pcentradamin)
+            
+            if ii > 50:
                 break
             
             ii+=1
