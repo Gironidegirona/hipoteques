@@ -352,26 +352,31 @@ with tab3:
 
         st.header("Result")
 
-        error = 100
-        pcentradamax = 100
-        pcentradamin = 0
+        if estalvis0 >0:
         
-        ii = 0
-        while error > 0.1:
-            pcentrada = 0.5*(pcentradamax + pcentradamin)
+            error = 100
+            pcentradamax = 100
+            pcentradamin = 0
+            
+            ii = 0
+            while error > 0.1:
+                pcentrada = 0.5*(pcentradamax + pcentradamin)
+                vivenda_, entrada_, estalvisnecessaris_, cuotamensual_ = calculateAtMaxStress(souMensual_1, souMensual_2, estalvis0, interesrate, anys, altresIngressos=altresIngressos,altresCredits=altresCredits,pcentrada=pcentrada, stressTarget=stressTarget)
+                
+                if estalvisnecessaris_<estalvis0:
+                    pcentradamin=pcentrada
+                else:
+                    pcentradamax=pcentrada
+                
+                error = abs(pcentradamax-pcentradamin)
+                
+                if ii > 5:
+                    break
+                
+                ii+=1
+        else:
             vivenda_, entrada_, estalvisnecessaris_, cuotamensual_ = calculateAtMaxStress(souMensual_1, souMensual_2, estalvis0, interesrate, anys, altresIngressos=altresIngressos,altresCredits=altresCredits,pcentrada=pcentrada, stressTarget=stressTarget)
             
-            if estalvisnecessaris_<estalvis0:
-                pcentradamin=pcentrada
-            else:
-                pcentradamax=pcentrada
-            
-            error = abs(pcentradamax-pcentradamin)
-            
-            if ii > 5:
-                break
-            
-            ii+=1
             
         st.markdown("Preu màxim assequible [k€]: ")
         st.success(f"{round(vivenda_,1)}")
