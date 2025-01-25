@@ -298,7 +298,7 @@ with tab3:
     col1, col2= st.columns(2)
     with col1:
         st.header("Casa")
-        estalvis = float(st.text_input("Estalvis que aportarem (valor o sino el min) [k€]", value="0"))
+        estalvis0 = float(st.text_input("Estalvis que aportarem (valor o sino el min) [k€]", value="0"))
         interesrate = float(st.text_input("interes calcular [%]", value="2.81"))
         stressTarget = float(st.text_input("Màxim stress permet [%]", value="35"))
 
@@ -319,25 +319,32 @@ with tab3:
             vivenda_ = 0.5*(vivendamin+vivendamax)
             entrada_, impostos_, notaris_ = despeses(vivenda_, pcentrada = pcentrada/100.) 
 
-            if estalvis > (entrada_+impostos_+notaris_):
-                entrada_ = estalvis - impostos_-notaris_
-
-            cuotamensual_ = round(calculateCuota(vivenda_+reforma-entrada_, interesrate, anys = anys),1)
-            estalvisnecessaris_ = round(entrada_+impostos_+notaris_,1)
-
-            stress_ = round((altresCredits+cuotamensual_)*100/(souMensual+altresIngressos),1)
-
-            if stress_ > stressTarget:
+            if estalvis0 > 0:
+                if estalvis0 > (entrada_+impostos_+notaris_):
+                    #entrada_ = estalvis - impostos_-notaris_
+                    ok=1
+            else:
+                ok=1
+            
+            if ok==1:
+                cuotamensual_ = round(calculateCuota(vivenda_+reforma-entrada_, interesrate, anys = anys),1)
+                estalvisnecessaris_ = round(entrada_+impostos_+notaris_,1)
+    
+                stress_ = round((altresCredits+cuotamensual_)*100/(souMensual+altresIngressos),1)
+    
+                if stress_ > stressTarget:
+                    vivendamax = vivenda_
+                    
+                if stress_ < stressTarget:
+                    vivendamin = vivenda_
+                ii+=1
+                if ii>50:
+                    break
+                    
+                if abs(vivendamax-vivendamin)<0.5:
+                    break
+            else:
                 vivendamax = vivenda_
-                
-            if stress_ < stressTarget:
-                vivendamin = vivenda_
-            ii+=1
-            if ii>50:
-                break
-                
-            if abs(vivendamax-vivendamin)<0.5:
-                break
 
             
         st.markdown("Preu màxim assequible [k€]: ")
