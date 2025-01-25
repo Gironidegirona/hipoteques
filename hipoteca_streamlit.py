@@ -1,4 +1,3 @@
-
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -315,7 +314,7 @@ with tab3:
         
         
         ii = 0
-        while abs(stress_-stressTarget)>0.1:
+        while abs(stress_-stressTarget)>0.01:
             souMensual = (souMensual_1 + souMensual_2)
             
             vivenda_ = 0.5*(vivendamin+vivendamax)
