@@ -51,6 +51,9 @@ def calculateAtMaxStress(souMensual_1, souMensual_2, estalvis0, interesrate, any
                 break
             else:
                 vivendamax = vivenda_
+                
+        else:
+            vivendamax = vivenda_
 
     return vivenda_, entrada_, estalvisnecessaris_, cuotamensual_
     
