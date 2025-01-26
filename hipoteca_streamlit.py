@@ -368,9 +368,9 @@ with tab3:
                 else:
                     pcentradamax=pcentrada_
                 
-                error = abs(pcentradamax-pcentradamin)
+                error = abs(estalvis0-estalvisnecessaris_)
                 
-                if ii > 5:
+                if ii > 10:
                     break
                 
                 ii+=1
