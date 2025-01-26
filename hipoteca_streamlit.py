@@ -86,7 +86,7 @@ def calculateAtMaxStress(souMensual_1, souMensual_2, estalvis0, interesrate, any
         if ii>10:
             break
                     
-	if abs(vivendamax-vivendamin)<0.5:
+        if abs(vivendamax-vivendamin)<0.5:
             break
         else:
             vivendamax = vivenda_
