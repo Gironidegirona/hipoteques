@@ -70,36 +70,28 @@ def calculateAtMaxStress(souMensual_1, souMensual_2, estalvis0, interesrate, any
         vivenda_ = 0.5*(vivendamin+vivendamax)
         entrada_, impostos_, notaris_ = despeses(vivenda_, pcentrada = pcentrada/100.) 
         
-        ok = 0
-        if estalvis0 > 0:
-            if estalvis0 > (entrada_+impostos_+notaris_):
-                #entrada_ = estalvis - impostos_-notaris_
-                ok=1
-        else:
-            ok=1
-            
-        if ok==1:
-            cuotamensual_ = round(calculateCuota(vivenda_-entrada_, interesrate, anys = anys),1)
-            estalvisnecessaris_ = round(entrada_+impostos_+notaris_,1)
+        
+        cuotamensual_ = round(calculateCuota(vivenda_-entrada_, interesrate, anys = anys),1)
+        estalvisnecessaris_ = round(entrada_+impostos_+notaris_,1)
 
-            stress_ = round((altresCredits+cuotamensual_)*100/(souMensual+altresIngressos),1)
+        stress_ = round((altresCredits+cuotamensual_)*100/(souMensual+altresIngressos),1)
     
-            if stress_ > stressTarget:
-                vivendamax = vivenda_
+        if stress_ > stressTarget:
+            vivendamax = vivenda_
                     
-            if stress_ < stressTarget:
-                vivendamin = vivenda_
-            ii+=1
-            if ii>10:
-                break
+        if stress_ < stressTarget:
+            vivendamin = vivenda_
+		
+        ii+=1
+        if ii>10:
+            break
                     
-            if abs(vivendamax-vivendamin)<0.5:
-                break
-            else:
-                vivendamax = vivenda_
-                
+	if abs(vivendamax-vivendamin)<0.5:
+            break
         else:
             vivendamax = vivenda_
+                
+
 
     return vivenda_, entrada_, estalvisnecessaris_, cuotamensual_
     
