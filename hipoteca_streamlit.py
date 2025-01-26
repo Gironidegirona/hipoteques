@@ -51,7 +51,7 @@ def calculateAtMaxEstalvis(souMensual_1, souMensual_2, estalvis0, interesrate, a
 
         ii+=1
 
-        if ii > 50:
+        if ii > 10:
             break
 
     
@@ -90,7 +90,7 @@ def calculateAtMaxStress(souMensual_1, souMensual_2, estalvis0, interesrate, any
             if stress_ < stressTarget:
                 vivendamin = vivenda_
             ii+=1
-            if ii>50:
+            if ii>10:
                 break
                     
             if abs(vivendamax-vivendamin)<0.5:
