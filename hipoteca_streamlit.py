@@ -360,13 +360,13 @@ with tab3:
             
             ii = 0
             while error > 0.1:
-                pcentrada = 0.5*(pcentradamax + pcentradamin)
-                vivenda_, entrada_, estalvisnecessaris_, cuotamensual_ = calculateAtMaxStress(souMensual_1, souMensual_2, estalvis0, interesrate, anys, altresIngressos=altresIngressos,altresCredits=altresCredits,pcentrada=pcentrada, stressTarget=stressTarget)
+                pcentrada_ = 0.5*(pcentradamax + pcentradamin)
+                vivenda_, entrada_, estalvisnecessaris_, cuotamensual_ = calculateAtMaxStress(souMensual_1, souMensual_2, estalvis0, interesrate, anys, altresIngressos=altresIngressos,altresCredits=altresCredits,pcentrada=pcentrada_, stressTarget=stressTarget)
                 
                 if estalvisnecessaris_<estalvis0:
-                    pcentradamin=pcentrada
+                    pcentradamin=pcentrada_
                 else:
-                    pcentradamax=pcentrada
+                    pcentradamax=pcentrada_
                 
                 error = abs(pcentradamax-pcentradamin)
                 
