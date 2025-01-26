@@ -400,7 +400,7 @@ with tab3:
         st.header("Result")
 
         if estalvis0 >0:
-            vivenda_, entrada_, estalvisnecessaris_, cuotamensual_ = calculateAtMaxEstalvis(souMensual_1, souMensual_2, estalvis0, interesrate, anys, altresIngressos=altresIngressos,altresCredits=altresCredits,pcentrada=pcentrada_, stressTarget=stressTarget)
+            vivenda_, entrada_, estalvisnecessaris_, cuotamensual_ = calculateAtMaxEstalvis(souMensual_1, souMensual_2, estalvis0, interesrate, anys, altresIngressos=altresIngressos,altresCredits=altresCredits,pcentrada=pcentrada, stressTarget=stressTarget)
 
         else:
             vivenda_, entrada_, estalvisnecessaris_, cuotamensual_ = calculateAtMaxStress(souMensual_1, souMensual_2, estalvis0, interesrate, anys, altresIngressos=altresIngressos,altresCredits=altresCredits,pcentrada=pcentrada, stressTarget=stressTarget)
