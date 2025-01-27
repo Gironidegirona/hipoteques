@@ -419,7 +419,7 @@ with tab4:
     with col1:
 
         st.header("Casa")
-        hipoteca0 = float(st.text_input("Remanent a pagar [k€] 00", value="140"))
+        hipoteca0 = float(st.text_input("Remanent a pagar [k€]", value="140"))
         interesactual = int(eval(st.text_input("Interes actual [%]", value="3.3"))*12)/12
         anyspagar = int(eval(st.text_input("Anys a pagar (pot ser 22.5) [anys]", value="22.7"))*12)/12
         valoramortitzat = int(eval(st.text_input("Valor a amortitzar [k€]", value="0")))
