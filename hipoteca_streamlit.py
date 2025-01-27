@@ -64,7 +64,7 @@ def calculateAtMaxStress(souMensual_1, souMensual_2, estalvis0, interesrate, any
     cuotamensual_ = 0
 
     ii = 0
-    while abs(stress_-stressTarget)>0.01:
+    while abs(stress_-stressTarget)>0.025:
         souMensual = (souMensual_1 + souMensual_2)
             
         vivenda_ = 0.5*(vivendamin+vivendamax)
@@ -81,15 +81,11 @@ def calculateAtMaxStress(souMensual_1, souMensual_2, estalvis0, interesrate, any
                     
         if stress_ < stressTarget:
             vivendamin = vivenda_
-		
+      
         ii+=1
         if ii>10:
             break
-                    
-        if abs(vivendamax-vivendamin)<0.5:
-            break
-        else:
-            vivendamax = vivenda_
+            
                 
 
 
@@ -390,6 +386,13 @@ with tab3:
     with col2:
 
         st.header("Result")
+        
+        souMensual_1 = round(calcularSouNet(sou_1)/12,3)*1000
+        souMensual_2 = round(calcularSouNet(sou_2)/12,3)*1000
+
+        souMensual = souMensual_1 + souMensual_2
+        
+        print(souMensual)
 
         if estalvis0 >0:
             vivenda_, entrada_, estalvisnecessaris_, cuotamensual_ = calculateAtMaxEstalvis(souMensual_1, souMensual_2, estalvis0, interesrate, anys, altresIngressos=altresIngressos,altresCredits=altresCredits,pcentrada=pcentrada, stressTarget=stressTarget)
