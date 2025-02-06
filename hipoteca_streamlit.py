@@ -424,10 +424,11 @@ with tab4:
         anyspagar =  int(eval(st.text_input("Anys a pagar (pot ser 22.5) [anys]", value="22.7"))*12)/12
         valoramortitzat = float(eval(st.text_input("Valor a amortitzar [k€]", value="0")))
         
-        
         costosFixes = float(st.text_input("Costos fixes [€]", value="1500"))/1000
         costosVariables = float(eval(st.text_input("Costos Variables anuals [€]", value="350 + 350")))
-
+        
+        C_total = (costosFixes + costosVariables*anys)
+        
         ncuotamensual = round(calculateCuota(hipoteca0-valoramortitzat, interesactual, anys = anyspagar),1)
 
 
@@ -437,7 +438,7 @@ with tab4:
         anysmin = 0
 
         jj = 0
-        while abs(cuota0-ncuota)>5:
+        while abs(cuota0-ncuota)>0.01:
             nanyspagar = int(0.5*(anysmax+anysmin)*12+1)/12
             ncuota = round(calculateCuota(hipoteca0-valoramortitzat, interesactual, anys = nanyspagar),1)
 
@@ -447,20 +448,25 @@ with tab4:
             if cuota0 < ncuota:
                 anysmin = nanyspagar
             jj+=1
-            if jj>10:
+            if jj>15:
                 break
             
         
         def calculateNewTAE(cuotaMensual, P, C_total, anys):
+            
+            print('\n\n')
+            
+            print(C_total)
             jj = 0
             error = 1000000
-            cuotaReal = cuotaMensual + C_total/anys
-            interesMax = 0.15
+            cuotaReal = cuotaMensual + C_total/(anys*12)
+            interesMax = 15
             interesMin = 0
             while error>0.001:
                 
                 interesi = 0.5*(interesMax+interesMin)
-                cuotai = calculateCuota(P, interesMin, anys = anys)
+                cuotai = calculateCuota(P, interesi, anys = anys)
+                print(interesi, cuotai, cuotaReal, cuotaMensual, C_total, anys)
                 
 
                 if cuotai > cuotaReal:
@@ -474,7 +480,7 @@ with tab4:
                     break
                 
             
-            return interesi*100
+            return interesi
         
 
     with col2:
@@ -484,24 +490,24 @@ with tab4:
         st.warning(f"{round(cuota0,2)}")
 
 
+        st.markdown("""---""")
 
         st.markdown("Nova cuota (reduïnt capital) [€]: ")
         st.warning(f"{round(ncuotamensual,2)}")
         
-        C_total = (costosFixes + costosVariables*anys)/1000
-        TAE = calculateNewTAE(ncuotamensual, hipoteca0-valoramortitzat, C_total, anys)
+        TAE = calculateNewTAE(ncuotamensual, hipoteca0-valoramortitzat, C_total, anyspagar)
         
         st.markdown("Nou TAE (reduïnt capital) [%]: ")
-        st.warning(f"{round(ncuotamensual,2)}")
+        st.success(f"{round(TAE,2)}")
         
 
+        
+        st.markdown("""---""")
 
 
         st.markdown("Nou periode (reduïnt anys) [anys]: ")
         st.warning(f"{round(nanyspagar,2)}")
-        
-        C_total = (costosFixes + costosVariables*anys)/1000
         TAE = calculateNewTAE(cuota0, hipoteca0-valoramortitzat, C_total, nanyspagar)
         
         st.markdown("Nou TAE (reduïnt anys) [%]: ")
-        st.warning(f"{round(TAE,2)}")
+        st.success(f"{round(TAE,2)}")
