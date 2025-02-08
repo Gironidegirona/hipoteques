@@ -6,10 +6,24 @@ import seaborn as sns
 import matplotlib.patches as patches
 sns.set_theme()
 
+# Set page to wide mode (optional)
+st.set_page_config(layout="wide")
+
+# Inject custom CSS to force desktop-like layout on mobile
+st.markdown("""
+    <style>
+    @media (max-width: 768px) {
+        body {
+            zoom: 0.8 !important;  /* Adjust zoom to make it look like a desktop */
+            overflow-x: scroll !important; /* Enable horizontal scrolling */
+        }
+    }
+    </style>
+    """, unsafe_allow_html=True)
 
 
 # Mobile-friendly settings
-st.set_page_config(layout="centered")
+#st.set_page_config(layout="centered")
 
 pc_notari = 0.015
 pc_impostos = 0.1
