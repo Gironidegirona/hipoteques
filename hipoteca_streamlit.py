@@ -231,7 +231,7 @@ st.title("Calculador Hipoteques")
 
 # In the second tab, put the content for "Banc"
 
-tab1, tab2, tab3, tab4 = st.tabs(["Hipoteca", "Stress", "Capacitat", "Amortització"])
+tab1, tab2, tab3, tab4, tab5 = st.tabs(["Hipoteca", "Stress", "Capacitat", "Amortització", "sensibilitat"])
 
 with tab1:
     # In the first tab, use two columns
@@ -524,3 +524,61 @@ with tab4:
         
         st.markdown("Nou TAE (reduïnt anys) [%]: ")
         st.success(f"{round(TAE,2)}")
+        
+        
+with tab5:
+
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        deute0 = float(st.text_input("Remanent a pagar [k€]", key = "deute0", value="136.4"))
+    with col2:
+        interes0 = float(eval(st.text_input("Interes actual [%]", key = "interes0", value="2.2"))*12)/12
+    with col3:
+        anys0 =  int(eval(st.text_input("Anys a pagar (pot ser 22.5) [anys]", key = "anys0", value="21"))*12)/12
+        
+    st.markdown("""---""")
+    
+    cola1, cola2  = st.columns(2)
+    with cola1:
+        deltaSteps =  float(eval(st.text_input("deltaSteps [%]", key = "deltaSteps0", value="0.1")))
+    with cola2:
+        numSteps =  int(eval(st.text_input("nombre de passos []", key = "numSteps0", value="5")))
+
+        
+    st.markdown("""---""")
+    
+    ncuotamensual = round(calculateCuota(deute0, interes0, anys = anys0),1)
+
+    st.header("Quotes en funció de interes")
+    n = numSteps
+    dn = deltaSteps
+    
+    datashow = {}
+    print(interes0-dn*n, interes0+dn*n)
+    for interesi in np.arange(interes0-dn*n, interes0+dn*(1+n), dn):   
+        quotai = round(calculateCuota(deute0, interesi, anys = anys0),1)
+        datashow[str(round(interesi,2))] = [round(quotai,1)]
+        
+        
+    df = pd.DataFrame(datashow)
+    colis = st.columns(len(df.columns))
+
+        
+
+    # Loop through columns
+    for i, (col, (key, value)) in enumerate(zip(colis, df.iloc[0].items())):
+        # Highlight if it matches interes0
+        colorline = 'color: #ff4b4b;' if key == str(interes0) else ''
+
+        # Add a right border to all columns except the last one
+        border_style = "border-right: 2px solid #ddd; padding-right: 10px;" if i < len(df.columns) - 1 else ""
+
+        col.markdown(
+            f"""
+            <div style="text-align: center; {border_style}">
+                <p style="font-size: 20px; font-weight: bold; margin-bottom: 5px;">{key}%</p>
+                <p style="font-size: 20px; font-weight: normal; {colorline}">{value}</p>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
