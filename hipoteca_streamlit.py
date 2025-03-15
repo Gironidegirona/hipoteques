@@ -105,13 +105,11 @@ def calculateAtMaxStress(souMensual_1, souMensual_2, estalvis0, interesrate, any
 
     return vivenda_, entrada_, estalvisnecessaris_, cuotamensual_
     
-
 def calculateCuota(c0, rate, anys = 30):
     ratem = rate/1200
     cuota = round((c0*(ratem*(1+ratem)**(anys*12))/((1+ratem)**(12*anys)-1))*1000,1)
 
     return cuota
-
 
 def despeses(vivenda, pcentrada = 0.2, pc_notari = 0.015, pc_impostos = 0.1):
     entrada = vivenda*pcentrada
@@ -224,6 +222,39 @@ def calcularSouNet(souBrut):
     souNetAny = round(souBrut-SS-IRPF,3)
     return souNetAny
 
+def calculateNewTAE(cuotaMensual, P, C_total, anys):
+    
+    jj = 0
+    error = 1000000
+    cuotaReal = cuotaMensual + C_total/(anys*12)
+    interesMax = 15
+    interesMin = 0
+    while error>0.001:
+        
+        interesi = 0.5*(interesMax+interesMin)
+        cuotai = calculateCuota(P, interesi, anys = anys)
+        
+
+        if cuotai > cuotaReal:
+            interesMax = interesi
+            
+        if cuotai < cuotaReal:
+            interesMin = interesi
+        
+        jj+=1
+        if jj>10:
+            break
+        
+    
+    return interesi
+
+def fillSpaces(num):
+    spaces = ''
+    for i in range(num):
+        spaces += '&nbsp;'
+        
+    return spaces
+
 
 # First level: Tabs with text entries
 st.title("Calculador Hipoteques")
@@ -231,24 +262,37 @@ st.title("Calculador Hipoteques")
 
 # In the second tab, put the content for "Banc"
 
-tab1, tab2, tab3, tab4, tab5 = st.tabs(["Hipoteca", "Stress", "Capacitat", "Amortització", "sensibilitat"])
+tab1, tab2, tab3, tab4 = st.tabs(["Hipoteca", "Capacitat", "Amortització", "Sensibilitat"])
 
 with tab1:
     # In the first tab, use two columns
     col1, col2, col3 = st.columns(3)
 
     with col1:
+
         st.header("Casa")
         vivenda = float(st.text_input("Preu Compra [k€]", value="500"))
         reforma = 0
         #reforma = float(st.text_input("Preu reforma [k€]", value="0"))
 
-        st.markdown("""---""")
-        IBI = float(st.text_input("IBI", value="450"))
-        assvida = float(st.text_input("Ass. Vida", value="700"))
-        assvivenda = float(st.text_input("Ass. Vivenda", value="450"))    
+        st.header("Sous")
+        sou_1 = float(st.text_input("Sou 1 [k€]", value="40"))
+        sou_2 = float(st.text_input("Sou 2 [k€]", value="40"))
+
+        altresCredits = float(st.text_input("Altres Credits [€/mes]", value="0"))
+        altresIngressos = float(st.text_input("Altres Ingressos [€/mes]", value="0"))
+
+        souMensual_1 = round(calcularSouNet(sou_1)/12,3)*1000
+        souMensual_2 = round(calcularSouNet(sou_2)/12,3)*1000
+
+
         if(0):
-            st.text_input("Alarma", value="50")
+            st.markdown("""---""")
+            IBI = float(st.text_input("IBI", value="450"))
+            assvida = float(st.text_input("Ass. Vida", value="700"))
+            assvivenda = float(st.text_input("Ass. Vivenda", value="450"))    
+            if(0):
+                st.text_input("Alarma", value="50")
 
     with col2:
         st.header("Banc")
@@ -262,33 +306,43 @@ with tab1:
         cuotamensual = round(calculateCuota(vivenda+reforma-entrada, rate, anys = anys),1)
         estalvisnecessaris = round(entrada+impostos+notaris,1)
         costtotalhipoteca = round(anys*12*cuotamensual/1000.,1)
-        mensualitatextres = round(cuotamensual+ IBI/12 + assvida/12 + assvivenda/12,1)
         mensualitattotal = round(cuotamensual,1)
 
 
-
+        souMensual = souMensual_1 + souMensual_2
+        stress = round((altresCredits+cuotamensual)*100/(souMensual+altresIngressos),1)
 
         st.header("Result")
-        st.markdown("Cuota mensual [€]: ")
-        st.success(f"{cuotamensual}")
+
+        maxLen = 30
+        frase = "Stress: "
+        spaces = fillSpaces(maxLen-len(frase)+12)
+        st.warning(f"{frase}{spaces}{stress}%")
+
+        frase = "Cuota mensual: "
+        spaces = fillSpaces(maxLen-len(frase))
+        st.success(f"{frase}{spaces}{cuotamensual}€")
         
-        st.markdown("Estalvis necessaris [k€]: ")
-        st.success(f"{estalvisnecessaris}")
+        frase = "Estalvis necessaris: "
+        spaces = fillSpaces(maxLen-len(frase))
+        st.success(f"{frase}{spaces}{estalvisnecessaris}k€")
 
+        frase = "Cost total hipoteca: "
+        spaces = fillSpaces(maxLen-len(frase))
+        st.success(f"{frase}{spaces}{costtotalhipoteca}k€")
 
-        st.markdown("Cost total hipoteca [k€]: ")
-        st.success(f"{costtotalhipoteca}")
-
-        st.markdown("""---""")
-
-        st.markdown("Mensulitat amb Extres [€]: ")
-        st.warning(f"{mensualitatextres}")
 
         if(0):
+
+            mensualitatextres = round(cuotamensual+ IBI/12 + assvida/12 + assvivenda/12,1)
+
+            st.markdown("""---""")
+
+            st.markdown("Mensulitat amb Extres [€]: ")
+            st.warning(f"{mensualitatextres}")
+
             st.markdown("Mensualitat Extres i despeses [€]: ")
             st.warning(f"{mensualitattotal}")
-
-
 
     if(0):
         df1, df1_  = calculateRangesEntrada(vivenda, rate, pcentrada/100.)
@@ -351,44 +405,10 @@ with tab1:
             # Display the second dataframe with the cell (4,4) marked in red
             #st.write("DataFrame 2")
             #st.dataframe(highlight(df2, row=4, col=4), use_container_width=True, height=400)
+
+
+
 with tab2:
-
-    col1, col2= st.columns(2)
-    with col1:
-        st.header("Casa")
-        sou_1 = float(st.text_input("Sou 1 [k€]", value="40"))
-        sou_2 = float(st.text_input("Sou 2 [k€]", value="40"))
-
-        st.markdown("""---""")
-        altresCredits = float(st.text_input("Altres Credits [€/mes]", value="0"))
-        altresIngressos = float(st.text_input("Altres Ingressos [€/mes]", value="0"))
-
-        souMensual_1 = round(calcularSouNet(sou_1)/12,3)*1000
-        souMensual_2 = round(calcularSouNet(sou_2)/12,3)*1000
-
-        souMensual = souMensual_1 + souMensual_2
-        stress = round((altresCredits+cuotamensual)*100/(souMensual+altresIngressos),1)
-
-    
-    with col2:
-
-        st.header("Result")
-        st.markdown("Stress [%]: ")
-        
-        st.warning(f"{stress}")
-
-
-        st.markdown("Cuota mensual [€]: ")
-        st.warning(f"{cuotamensual}")
-
-        if(1):
-            st.markdown("""---""")
-            st.markdown("Sou net 12 pagues[€]: ")
-            st.success(f"{souMensual_1}")
-
-            st.markdown("Sou net 12 pagues[€]: ")
-            st.success(f"{souMensual_2}")
-with tab3:
 
     col1, col2= st.columns(2)
     with col1:
@@ -427,7 +447,9 @@ with tab3:
 
         st.markdown("Cuota mensual [€]: ")
         st.warning(f"{cuotamensual_}")
-with tab4:
+
+
+with tab3:
 
     col1, col2= st.columns(2)
     with col1:
@@ -465,31 +487,6 @@ with tab4:
                 break
             
         
-        def calculateNewTAE(cuotaMensual, P, C_total, anys):
-            
-            jj = 0
-            error = 1000000
-            cuotaReal = cuotaMensual + C_total/(anys*12)
-            interesMax = 15
-            interesMin = 0
-            while error>0.001:
-                
-                interesi = 0.5*(interesMax+interesMin)
-                cuotai = calculateCuota(P, interesi, anys = anys)
-                
-
-                if cuotai > cuotaReal:
-                    interesMax = interesi
-                    
-                if cuotai < cuotaReal:
-                    interesMin = interesi
-                
-                jj+=1
-                if jj>10:
-                    break
-                
-            
-            return interesi
         
 
     with col2:
@@ -526,7 +523,7 @@ with tab4:
         st.success(f"{round(TAE,2)}")
         
         
-with tab5:
+with tab4:
 
     col1, col2, col3 = st.columns(3)
     with col1:
