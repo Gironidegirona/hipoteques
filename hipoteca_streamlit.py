@@ -373,7 +373,7 @@ with tab1:
     print(rate-dn*n, rate+dn*n)
     for interesi in np.arange(rate-dn*n, rate+dn*(1+n), dn):   
         quotai = round(calculateCuota(deute, interesi, anys = anys),1)
-        datashow[str(round(interesi,2))] = [round(quotai,1), round((quotai-ncuotamensual)*anys)]
+        datashow[str(round(interesi,2))] = [round(quotai,1), round((quotai-ncuotamensual)*12)]
         
         
     # df = pd.DataFrame(datashow)
