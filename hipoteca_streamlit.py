@@ -373,7 +373,7 @@ with tab1:
     print(rate-dn*n, rate+dn*n)
     for interesi in np.arange(rate-dn*n, rate+dn*(1+n), dn):   
         quotai = round(calculateCuota(deute, interesi, anys = anys),1)
-        datashow[str(round(interesi,2))] = [round(quotai,1), round((quotai-ncuotamensual)*12*anys/10)/100.]
+        datashow[str(round(interesi,2))] = [round(quotai,1), round((quotai-ncuotamensual)*anys)]
         
         
     # df = pd.DataFrame(datashow)
@@ -402,7 +402,7 @@ with tab1:
             <div style="text-align: center; {border_style}">
                 <p style="font-size: 20px; font-weight: bold; margin-bottom: 5px;">{key}%</p>
                 <p style="font-size: 20px; font-weight: normal; {colorline}; margin: 2px 0;"">{value1}</p>
-                <p style="font-size: 20px; font-weight: normal; {colorline}; margin: 2px 0;"">({value2}k€)</p>
+                <p style="font-size: 20px; font-weight: normal; {colorline}; margin: 2px 0;"">({value2}€/y)</p>
             </div>
             """,
             unsafe_allow_html=True
