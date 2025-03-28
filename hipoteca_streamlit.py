@@ -373,31 +373,59 @@ with tab1:
     print(rate-dn*n, rate+dn*n)
     for interesi in np.arange(rate-dn*n, rate+dn*(1+n), dn):   
         quotai = round(calculateCuota(deute, interesi, anys = anys),1)
-        datashow[str(round(interesi,2))] = [round(quotai,1)]
+        datashow[str(round(interesi,2))] = [round(quotai,1), round((quotai-ncuotamensual)*12*anys/10)/100.]
         
         
-    df = pd.DataFrame(datashow)
-    colis = st.columns(len(df.columns))
+    # df = pd.DataFrame(datashow)
+    # colis = st.columns(len(df.columns))
+    
+    df = pd.DataFrame.from_dict(datashow, orient='index', columns=['Value1', 'Value2'])
+    
+    df.reset_index(inplace=True)
+    df.rename(columns={'index': 'Key'}, inplace=True)
+    
+    colis = st.columns(len(df))
+        
 
+    # Loop through rows
+    for i, row in df.iterrows():
+        key, value1, value2 = row['Key'], row['Value1'], row['Value2']
         
-
-    # Loop through columns
-    for i, (col, (key, value)) in enumerate(zip(colis, df.iloc[0].items())):
         # Highlight if it matches interes0
         colorline = 'color: #ff4b4b;' if key == str(rate) else ''
 
         # Add a right border to all columns except the last one
-        border_style = "border-right: 2px solid #ddd; padding-right: 10px;" if i < len(df.columns) - 1 else ""
+        border_style = "border-right: 2px solid #ddd; padding-right: 10px;" if i < len(df) - 1 else ""
 
-        col.markdown(
+        colis[i % len(colis)].markdown(
             f"""
             <div style="text-align: center; {border_style}">
                 <p style="font-size: 20px; font-weight: bold; margin-bottom: 5px;">{key}%</p>
-                <p style="font-size: 20px; font-weight: normal; {colorline}">{value}</p>
+                <p style="font-size: 20px; font-weight: normal; {colorline}; margin: 2px 0;"">{value1}</p>
+                <p style="font-size: 20px; font-weight: normal; {colorline}; margin: 2px 0;"">({value2}k€)</p>
             </div>
             """,
             unsafe_allow_html=True
         )
+
+    if(0):
+        # Loop through columns
+        for i, (col, (key, value1, value2)) in enumerate(zip(colis, df.iloc[0].items())):
+            # Highlight if it matches interes0
+            colorline = 'color: #ff4b4b;' if key == str(rate) else ''
+
+            # Add a right border to all columns except the last one
+            border_style = "border-right: 2px solid #ddd; padding-right: 10px;" if i < len(df.columns) - 1 else ""
+
+            col.markdown(
+                f"""
+                <div style="text-align: center; {border_style}">
+                    <p style="font-size: 20px; font-weight: bold; margin-bottom: 5px;">{key}%</p>
+                    <p style="font-size: 20px; font-weight: normal; {colorline}">{value}</p>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
 
     if(0):
         df1, df1_  = calculateRangesEntrada(vivenda, rate, pcentrada/100.)
@@ -461,8 +489,6 @@ with tab1:
             #st.write("DataFrame 2")
             #st.dataframe(highlight(df2, row=4, col=4), use_container_width=True, height=400)
 
-
-
 with tab2:
 
     col1, col2= st.columns(2)
@@ -502,7 +528,6 @@ with tab2:
 
         st.markdown("Cuota mensual [€]: ")
         st.warning(f"{cuotamensual_}")
-
 
 with tab3:
 
