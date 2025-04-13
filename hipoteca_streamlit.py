@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+import datetime
 import matplotlib.patches as patches
 sns.set_theme()
 
@@ -255,6 +256,38 @@ def fillSpaces(num):
         
     return spaces
 
+def quardreAmortitzacioHIpoteca(interes, anys, capital):
+    schedule = []
+    monthly_interest_rate = interes / 100 / 12
+    total_payments = anys * 12
+
+    # Monthly payment using annuity formula
+    monthly_payment = capital * monthly_interest_rate / (1 - (1 + monthly_interest_rate) ** -total_payments)
+
+    remaining_capital = capital
+    year = 1
+    while year < anys + 1:
+        capital_paid_year = 0
+        interest_paid_year = 0
+
+        for month in range(12):
+            interest_payment = remaining_capital * monthly_interest_rate
+            principal_payment = monthly_payment - interest_payment
+            remaining_capital -= principal_payment
+
+            capital_paid_year += principal_payment
+            interest_paid_year += interest_payment
+
+        schedule.append({
+            "Any": str(year),
+            "year": str(year+datetime.datetime.now().year),
+            "CapitalPagat[k€]": round(capital_paid_year, 2),
+            "InteresPagat[k€]": round(interest_paid_year, 2),
+            "CapitalPendent[k€]": round(remaining_capital if remaining_capital > 0 else 0, 2)
+        })
+        year +=1 
+
+    return schedule
 
 # First level: Tabs with text entries
 st.title("Calculador Hipoteques")
@@ -262,7 +295,7 @@ st.title("Calculador Hipoteques")
 
 # In the second tab, put the content for "Banc"
 
-tab1, tab2, tab3 = st.tabs(["Hipoteca", "Capacitat", "Amortització"])
+tab1, tab2, tab3, tab4 = st.tabs(["Hipoteca", "Capacitat", "Amortització", "Quadre"])
 
 with tab1:
     # In the first tab, use two columns
@@ -352,9 +385,7 @@ with tab1:
             st.markdown("Mensualitat Extres i despeses [€]: ")
             st.warning(f"{mensualitattotal}")
 
-       
     st.markdown("""---""")
-    
     cola1, cola2  = st.columns(2)
     with cola1:
         deltaSteps =  float(eval(st.text_input("deltaSteps [%]", key = "deltaSteps0", value="0.1")))
@@ -601,4 +632,11 @@ with tab3:
         
         st.markdown("Nou TAE (reduïnt anys) [%]: ")
         st.success(f"{round(TAE,2)}")
-        
+
+with tab4:
+
+    st.header("Taula quadre d'armotització")
+    schedule = quardreAmortitzacioHIpoteca(rate, anys, vivenda-entrada)
+    schedule = pd.DataFrame.from_dict(schedule)
+
+    st.dataframe(schedule,hide_index=True, use_container_width=True, height=1200)
